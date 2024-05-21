@@ -28,9 +28,11 @@ environ.Env.read_env(os.path.join(BASE_DIR, "environment/.env"))
 SECRET_KEY = "django-insecure-i_qi5an=6m9ki)=nwpy8)2&-qk$-)%!di&a+fd7_+30)5y7mw#"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(env('DEBUG')))
+DEBUG = bool(int(env("DEBUG")))
 
-ALLOWED_HOSTS = [host for host in env('ALLOWED_HOSTS').split(',') if env('ALLOWED_HOSTS') ]
+ALLOWED_HOSTS = [
+    host for host in env("ALLOWED_HOSTS").split(",") if env("ALLOWED_HOSTS")
+]
 
 
 # Application definition
@@ -59,7 +61,7 @@ ROOT_URLCONF = "ChatServerPlayground.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR,'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -81,12 +83,22 @@ WSGI_APPLICATION = "ChatServerPlayground.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": env('POSTGRES_DB_NAME'),
-        "USER": env('POSTGRES_DB_USER'),
-        "PASSWORD": env('POSTGRES_DB_PASSWORD'),
-        "HOST": env('POSTGRES_DB_HOST'),
-        "PORT": env('POSTGRES_DB_PORT'),  # default PostgreSQL port
+        "NAME": env("POSTGRES_DB_NAME"),
+        "USER": env("POSTGRES_DB_USER"),
+        "PASSWORD": env("POSTGRES_DB_PASSWORD"),
+        "HOST": env("POSTGRES_DB_HOST"),
+        "PORT": env("POSTGRES_DB_PORT"),  # default PostgreSQL port
     }
+}
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(env("REDIS_HOST"), int(env("REDIS_PORT")))],
+        },
+    },
 }
 
 
